@@ -14,7 +14,8 @@ int main(){
         int pontosLocais = 0;
         int tamanhoBloco = N / nThreads;
         int inicio = idThread * tamanhoBloco;
-        int fim = (idThread == nThreads - 1) ? N : inicio + tamanhoBloco;        
+        int fim = (idThread == nThreads - 1) ? N : inicio + tamanhoBloco;  
+        #pragma omp parallel for      
         for (int i = inicio; i < fim; i++){
             double x = (double)rand() / RAND_MAX;
             double y = (double)rand() / RAND_MAX;
@@ -22,7 +23,7 @@ int main(){
                 pontosLocais++;
             }
         }
-        #pragma omp critical
+        #pragma omp critical //so uma thread por vez pode executar aqui
         {
             pontos += pontosLocais;
         }

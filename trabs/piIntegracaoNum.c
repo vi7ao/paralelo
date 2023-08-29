@@ -9,6 +9,7 @@ double f(double x){
 double regraDoTrapezio(double (*f)(double), double a, double b, int n){
     double h = (b-a)/n;
     double somaArea = 0.5 * (f(a) + f(b));
+    #pragma omp parallel for reduction(+:somaArea) // reduction faz com que cada thread tenha sua somaArea e no final soma tudo
     for(int i = 1; i < n; i++){
         double x = a + i * h;
         somaArea += f(x);
