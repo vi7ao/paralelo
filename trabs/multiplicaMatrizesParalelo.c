@@ -35,11 +35,11 @@ int main() {
     int sizeBlocagem = 32; //procurei e 32 foi tamanho utilizado em alguns exemplos, fala que é pq é o tamanho da cache de algumas arquiteturas
                            //talvez poderia ser outro valor sla
 
-    #pragma omp parallel for private(i, j, k)
+    #pragma omp parallel private(i, j, k)
     for (i = 0; i < sizeOfLineMatrix1; i += sizeBlocagem) {
         for (j = 0; j < sizeOfColumnMatrix2; j += sizeBlocagem) {
             for (k = 0; k < sizeOfColumnMatrix1; k += sizeBlocagem) {
-                #pragma omp task firstprivate(i, j, k) depend(out: matrizResultado[i:i+sizeBlocagem][j:j+sizeBlocagem]) //first private faz cada tarefa ter seu i, j e k
+                #pragma omp task firstprivate(i, j, k) depend(inout: matrizResultado[i:sizeBlocagem][j:sizeBlocagem]) depend(in: matriz1[i:sizeBlocagem][k:sizeBlocagem]) depend(in:matriz2[k:sizeBlocagem][j:sizeBlocagem])
                 for (int ii = i; ii < i + sizeBlocagem && ii < sizeOfLineMatrix1; ii++) {//linha do bloco               //o depend faz as tarefas n se sobreporem
                     for (int jj = j; jj < j + sizeBlocagem && jj < sizeOfColumnMatrix2; jj++) {//colula do bloco
                         matrizResultado[ii][jj] = 0;
@@ -51,9 +51,7 @@ int main() {
             }
         }
     }
-
-    #pragma omp taskwait
-
+    
     printf("Matriz Resultado: \n");
     for (i = 0; i < sizeOfLineMatrix1; i++) {
         for (j = 0; j < sizeOfColumnMatrix2; j++) {
@@ -64,3 +62,5 @@ int main() {
 
     return 0;
 }
+
+// gcc -fopenmp multiplicaMatrizesParalelo.c -o multiplicaMatrizesParalelo
