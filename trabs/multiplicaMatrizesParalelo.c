@@ -36,6 +36,7 @@ int main() {
                            //talvez poderia ser outro valor sla
 
     #pragma omp parallel private(i, j, k)
+    #pragma omp single
     for (i = 0; i < sizeOfLineMatrix1; i += sizeBlocagem) {
         for (j = 0; j < sizeOfColumnMatrix2; j += sizeBlocagem) {
             for (k = 0; k < sizeOfColumnMatrix1; k += sizeBlocagem) {
